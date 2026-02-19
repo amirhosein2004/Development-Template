@@ -1,149 +1,91 @@
-# 🔥 Commit Message Convention for Microservices
+# Git Conventions Guide
 
-## 📋 Structure
+This project follows structured conventions for commits, branches, and Git workflow to maintain clear, traceable history.
 
+## Quick Start
+
+### Commit Format
 ```
-<service>: <change-type> | <module/domain>: <summary>
-
-<body (optional)>
-```
-
-**Example:**
-```
-auth: secure | jwt: rotate signing keys
-
-Add rotation strategy for refresh tokens
-Automatically rotates every 7 days
+<type>(<scope>): <subject>
 ```
 
----
-
-## ⚠️ Important Rules
-
-### 🔤 Single Word Rule
-- **Service** must be **one word** (e.g., `auth` not `auth-service`)
-- **Change Type** must be **one word** (e.g., `add` not `add-feature`)
-- **Module/Domain** must be **one word** (e.g., `jwt` not `jwt-handler`)
-
-### 💡 If No Matching Change Type
-If none of the predefined change-types fit your change, add **one meaningful word**:
-
+### Branch Format
 ```
-payment: reconcile | ledger: sync failed transactions
-inventory: recount | stock: manual inventory audit
-order: cancel | fulfillment: handle customer request
+<type>/<scope>
 ```
 
-### 💡 If No Service
-For project-level files like env,ci/cdm,.. (not specific to any service), use `root`
+### Types (in order of priority)
+1. **document** - Documentation updates
+2. **bugfix** - Bug fixes
+3. **test** - Test additions/modifications
+4. **CICD** - CI/CD pipeline changes
+5. **feature** - New features
+6. **maintenance** - Refactoring, optimization, dependencies
 
-### 📝 Body (Optional)
-If the first line isn't enough, add more details:
-- Why this change was necessary
-- What problem it solves
-- Side effects or important notes
+### Scopes
+- `root` - Project root level
+- `helpers` - helpers/ directory
+- `migrations` - migrations/ directory
+- `src_v2_app_comments` - src/v2/app_comments/
+- `src_v2_manager` - src/v2/manager/
+- `src_v2_app_comments_data_model` - src/v2/app_comments/data_models/
 
----
+## Examples
 
-## 🧩 Commit Components
+### Feature
+```
+feature(src_v2_app_comments): add pagination support to comments listing
+```
 
-### 1️⃣ Service (Microservice) - One Word
-The exact name of the microservice:
-- `auth` - Authentication
-- `payment` - Payment Processing
-- `notification` - Notifications
-- `gateway` - API Gateway
-- `inventory` - Inventory Management
-- `order` - Order Management
+### Bug Fix
+```
+bugfix(src_v2_manager): resolve authentication token validation error
+```
 
-**For project-level files (not specific to any service), use `root`:**
-- `root` - Project-level configuration, infrastructure, or setup files
-  - Docker Compose, .gitignore, .env files
-  - CI/CD pipelines, Makefiles, scripts
-  - Project-wide documentation
+### Documentation
+```
+document(root): update GUIDE.md with v2 API architecture details
+```
 
-### 2️⃣ Change Type (Type of Change) - One Word
+### Testing
+```
+test(src_v2_app_comments_data_model): add unit tests for config validation
+```
 
-#### 📝 Development
-| Type | Usage |
-|------|-------|
-| `add` | Adding new feature, endpoint, or file |
-| `update` | Regular changes, updating part of behavior |
-| `refactor` | Changing internal structure without changing external behavior |
-| `remove` | Removing code, feature, file, or endpoint |
+### CI/CD
+```
+CICD(root): update Dockerfile-cloud base image to python:3.12
+```
 
-#### 🎯 Quality & Stability
-| Type | Usage |
-|------|-------|
-| `fix` | Bug fix |
-| `improve` | Improving quality or readability |
-| `optimize` | Optimizing speed and performance |
-| `stabilize` | Increasing reliability, preventing crashes |
+### Maintenance
+```
+maintenance(src_v2_app_comments): optimize comment fetching with query caching
+```
 
-#### 🏗️ Architecture & Infrastructure
-| Type | Usage |
-|------|-------|
-| `infra` | Infrastructure changes (Docker, K8s, CI/CD) |
-| `config` | Configuration, environment, or secrets changes |
-| `migration` | Database schema or migration changes |
-| `deps` | Adding/removing/updating dependencies |
+## Workflow Example
 
-#### 🔐 Security
-| Type | Usage |
-|------|-------|
-| `secure` | Security patches, hardening |
-| `audit` | Security logging, audit trail |
+```bash
+# Create feature branch
+git checkout -b feature/src_v2_app_comments
 
-#### 🔗 Service Communication
-| Type | Usage |
-|------|-------|
-| `contract` | API contract, DTO, or schema changes |
-| `event` | Event, topic, or pub/sub changes |
-| `integration` | Integration with external or internal services |
+# Make changes
+git add .
+git commit -m "feature(src_v2_app_comments): add new feature"
 
-#### 🛠️ Developer Experience
-| Type | Usage |
-|------|-------|
-| `docs` | Documentation changes |
-| `test` | Adding or updating tests |
-| `tooling` | Linters, formatters, git hooks, dev tools |
+# Push to remote
+git push -u origin feature/src_v2_app_comments
+```
 
-### 3️⃣ Module/Domain (Component) - One Word
-**The important part that changed.** This can be:
+## Key Rules
 
-- **Technical layers:** `jwt`, `cache`, `queue`, `repository`
-- **External services:** `stripe`, `twilio`, `sendgrid`
-- **Business entities:** `stock`, `invoice`, `order`, `user`
-- **Architecture components:** `api`, `worker`, `scheduler`, `webhook`
-- **Project-level components (when using `root`):** `docker-compose`, `env`, `gitignore`, `makefile`, `ci-cd`
+- **Type selection:** Check types in priority order, select first match
+- **Smallest scope:** Use most specific scope applicable
+- **One concern per commit:** Each commit addresses single concern
+- **Atomic commits:** Changes should be logically complete
+- **Reference issues:** Include related issue numbers in commit body
 
-**Examples:**
-- `auth: update | jwt: rotate access token lifetime` → JWT changed
-- `payment: add | stripe: refund endpoint` → Stripe integration changed
-- `inventory: fix | stock: incorrect reservation logic` → Stock logic changed
-- `order: refactor | repository: split query methods` → Repository pattern changed
-- `notification: optimize | sms: reduce provider latency` → SMS provider changed
-- `root: infra | docker-compose: add services configuration` → Docker Compose added
-- `root: config | env: add environment variables template` → .env template added
-- `root: config | gitignore: exclude build artifacts` → .gitignore added
+## Documentation
 
-### 4️⃣ Summary (Description) - 5-7 Words
-Clear, concise, no extra explanation, simple language.
-
----
-
-## 🎁 Golden Rule
-
-**The first line of the commit must be 100% sufficient.**
-
-A team lead reading only the first line should understand:
-- ✅ Which service
-- ✅ What type of change
-- ✅ Which component
-- ✅ What nature of change
-
----
-
-## 📚 Real Examples
-
-See **[Example.md](./Example.md)** for complete examples with body content.
+- **Commit Message Convention.md** - Detailed commit message rules
+- **Branch Naming Convention.md** - Branch naming standards
+- **Git Commands Reference.md** - Common Git commands
