@@ -1,6 +1,9 @@
-# Git Conventions Guide
+# Development Template
 
-This project follows structured conventions for commits, branches, and Git workflow to maintain clear, traceable history.
+This project provides two things:
+
+1. **Git conventions** — structured commit, branch, and workflow rules for clear, traceable history.
+2. **Claude-Files/** — a reusable working template for **AI-driven projects built with Claude** (agent workspaces powered by the Claude Agent SDK / Claude Code). Copy it into a new project to seed an opinionated agent scaffold (`agent_config/`, `business/`, `product/`, `tech/`, `docs/`) with commands, skills, hooks, and standards already wired up.
 
 ## Quick Start
 
@@ -89,4 +92,24 @@ git push -u origin feature/src_v2_app_comments
 - **Commit Message Convention.md** - Detailed commit message rules
 - **Branch Naming Convention.md** - Branch naming standards
 - **Git Commands Reference.md** - Common Git commands
-- **Claude-Files/** - Reusable Claude agent scaffolding templates (agent_config, business, product, tech, docs layers) plus pipeline-flow reference. Copy into a new workspace and fill placeholders (`{{PROJECT_NAME}}`, `{{PROJECT_ID}}`, `{{POSITIONING}}`, `{{SEGMENTS}}`, `{{DIMENSIONS}}`, `{{LOCALE_RULES}}`).
+
+## Claude-Files/ — AI project working template
+
+`Claude-Files/` is the working template for projects built around **Claude AI agents** (Claude Code / Claude Agent SDK). It is not documentation about Git — it is a copy-and-fill scaffold you drop into a new AI-driven workspace to get a consistent structure across every Claude-powered project.
+
+### Layers
+
+- **`agent_config/`** — the `.claude/` directory: commands, skills, hooks, `settings.json`, and onboarding `CLAUDE.md` for the agent.
+- **`business/docs/`** — market research, competitor analysis, brand assets, legal documents.
+- **`product/docs/`** — product scope, feature catalog, UI/UX design system templates.
+- **`tech/docs/`** — engineering standards, project architecture, backend/frontend/infra scaffolds.
+- **`docs/standards/`** — cross-repo standards (git, MR flow, review rubric) shared by every layer.
+- **`pipeline-flow.md` / `.html`** — reference diagram of how the layers feed each other.
+
+### How to use
+
+1. Copy `Claude-Files/` into a new project (or use it as the umbrella of an AI workspace).
+2. Fill the placeholders: `{{PROJECT_NAME}}`, `{{PROJECT_ID}}`, `{{POSITIONING}}`, `{{SEGMENTS}}`, `{{DIMENSIONS}}`, `{{LOCALE_RULES}}`.
+3. Run the agent commands (`/init`, `/setup`, `/audit`, `/docs`, `/implement`, `/mr`, …) defined under `agent_config/.claude/commands/`.
+
+Everything under `Claude-Files/` is a template surface — the Git conventions above still govern how commits and branches are made when you work on it.
