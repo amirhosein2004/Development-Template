@@ -8,6 +8,10 @@ This workspace follows structured Git conventions to maintain clear, traceable h
 2. **Branch Naming Convention** - How to name branches
 3. **Git Commands Reference** - Common Git commands
 
+### Claude Agent Scaffolding:
+
+- **Claude-Files/** - Copy-and-fill templates for Claude agent workspaces (`agent_config/`, `business/`, `product/`, `tech/`, `docs/`) with a `pipeline-flow` reference at the root.
+
 ### What You Need to Know:
 
 - **Commit Format:** `<type>(<scope>): <subject>`

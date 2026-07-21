@@ -89,3 +89,4 @@ git push -u origin feature/src_v2_app_comments
 - **Commit Message Convention.md** - Detailed commit message rules
 - **Branch Naming Convention.md** - Branch naming standards
 - **Git Commands Reference.md** - Common Git commands
+- **Claude-Files/** - Reusable Claude agent scaffolding templates (agent_config, business, product, tech, docs layers) plus pipeline-flow reference. Copy into a new workspace and fill placeholders (`{{PROJECT_NAME}}`, `{{PROJECT_ID}}`, `{{POSITIONING}}`, `{{SEGMENTS}}`, `{{DIMENSIONS}}`, `{{LOCALE_RULES}}`).
