@@ -1,0 +1,1045 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="light dark" />
+  <title>&lt;Product&gt; — Design System Template</title>
+  <meta name="description" content="Visual companion to design-system-template.md — token showcase and component gallery scaffold." />
+  <style>
+    /* ============================================================
+       DESIGN TOKENS — placeholders. Replace values, keep the names.
+       Structure follows: color · type · space · radii · elevation · motion
+       ============================================================ */
+
+    :root {
+      /* --- Type scale (Perfect Fourth 1.333) --- */
+      --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+
+      --fs-display: clamp(2.5rem, 4vw + 1rem, 4rem);
+      --fs-h1: 2.25rem;
+      --fs-h2: 1.75rem;
+      --fs-h3: 1.375rem;
+      --fs-body: 1rem;
+      --fs-sm: 0.875rem;
+      --fs-xs: 0.75rem;
+
+      --lh-tight: 1.2;
+      --lh-normal: 1.5;
+      --lh-relaxed: 1.7;
+
+      --fw-regular: 400;
+      --fw-medium: 500;
+      --fw-semibold: 600;
+      --fw-bold: 700;
+
+      /* --- Spacing (4pt grid) --- */
+      --space-0: 0;
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.5rem;
+      --space-6: 2rem;
+      --space-7: 2.5rem;
+      --space-8: 3rem;
+      --space-9: 4rem;
+      --space-10: 6rem;
+
+      /* --- Radii --- */
+      --radius-none: 0;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+      --radius-pill: 9999px;
+
+      /* --- Motion --- */
+      --dur-instant: 80ms;
+      --dur-fast: 160ms;
+      --dur-base: 240ms;
+      --dur-slow: 400ms;
+      --ease-standard: cubic-bezier(.2, 0, 0, 1);
+      --ease-emphasized: cubic-bezier(.3, 0, 0, 1);
+      --ease-exit: cubic-bezier(.4, 0, 1, 1);
+
+      /* --- Breakpoints (documented only — used in @media) --- */
+      /* sm 40em · md 48em · lg 64em · xl 80em */
+
+      /* --- Focus --- */
+      --focus: #2563eb;
+      --focus-offset: 2px;
+
+      /* --- Content sizing --- */
+      --content-max: 72ch;
+      --page-max: 1200px;
+    }
+
+    /* Light theme */
+    :root,
+    [data-theme="light"] {
+      --bg: #fafbfc;
+      --surface: #ffffff;
+      --surface-raised: #ffffff;
+      --ink: #0f172a;
+      --ink-muted: #475569;
+      --border: #e2e8f0;
+      --border-strong: #cbd5e1;
+
+      --brand: #4f46e5;
+      --brand-hover: #4338ca;
+      --brand-ink: #ffffff;
+
+      --success: #16a34a;
+      --warning: #d97706;
+      --danger:  #dc2626;
+      --info:    #0284c7;
+
+      --elev-1: 0 1px 2px rgb(0 0 0 / .06);
+      --elev-2: 0 2px 6px rgb(0 0 0 / .08);
+      --elev-3: 0 8px 24px rgb(0 0 0 / .12);
+      --elev-4: 0 16px 48px rgb(0 0 0 / .18);
+    }
+
+    /* Dark theme */
+    [data-theme="dark"] {
+      --bg: #0b1220;
+      --surface: #121a2b;
+      --surface-raised: #182238;
+      --ink: #f1f5f9;
+      --ink-muted: #94a3b8;
+      --border: #1e293b;
+      --border-strong: #334155;
+
+      --brand: #818cf8;
+      --brand-hover: #a5b4fc;
+      --brand-ink: #0b1220;
+
+      --success: #4ade80;
+      --warning: #fbbf24;
+      --danger:  #f87171;
+      --info:    #38bdf8;
+
+      --elev-1: 0 1px 2px rgb(0 0 0 / .4);
+      --elev-2: 0 2px 6px rgb(0 0 0 / .5);
+      --elev-3: 0 8px 24px rgb(0 0 0 / .6);
+      --elev-4: 0 16px 48px rgb(0 0 0 / .7);
+    }
+
+    /* System preference mirror when no explicit theme selected */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme]) {
+        --bg: #0b1220;
+        --surface: #121a2b;
+        --ink: #f1f5f9;
+      }
+    }
+
+    /* ============================================================
+       BASE
+       ============================================================ */
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { color-scheme: light dark; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      font-size: var(--fs-body);
+      line-height: var(--lh-normal);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      font-variant-numeric: tabular-nums;
+    }
+
+    a { color: var(--brand); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    a:hover { color: var(--brand-hover); }
+
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: var(--focus-offset);
+      border-radius: var(--radius-sm);
+    }
+
+    /* Skip link — WCAG 2.4.1 */
+    .skip-link {
+      position: absolute;
+      inset-inline-start: var(--space-4);
+      inset-block-start: var(--space-4);
+      background: var(--brand);
+      color: var(--brand-ink);
+      padding: var(--space-2) var(--space-3);
+      border-radius: var(--radius-md);
+      transform: translateY(-200%);
+      transition: transform var(--dur-fast) var(--ease-standard);
+      z-index: 100;
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    /* ============================================================
+       LAYOUT
+       ============================================================ */
+
+    .page {
+      max-width: var(--page-max);
+      margin-inline: auto;
+      padding: var(--space-6) var(--space-4);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+      backdrop-filter: blur(8px);
+      border-block-end: 1px solid var(--border);
+    }
+    @supports not (backdrop-filter: blur(1px)) {
+      .topbar { background: var(--bg); }
+    }
+
+    .topbar__inner {
+      max-width: var(--page-max);
+      margin-inline: auto;
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      padding: var(--space-3) var(--space-4);
+    }
+    .topbar__title { font-weight: var(--fw-semibold); font-size: var(--fs-body); }
+    .topbar__spacer { flex: 1; }
+
+    /* ============================================================
+       TYPOGRAPHY
+       ============================================================ */
+
+    h1, h2, h3, h4, h5, h6 { line-height: var(--lh-tight); margin: 0 0 var(--space-3); }
+    h1 { font-size: var(--fs-h1); font-weight: var(--fw-bold); }
+    h2 { font-size: var(--fs-h2); font-weight: var(--fw-bold); margin-block-start: var(--space-8); }
+    h3 { font-size: var(--fs-h3); font-weight: var(--fw-semibold); margin-block-start: var(--space-6); }
+    p  { margin: 0 0 var(--space-4); max-width: var(--content-max); }
+    small { font-size: var(--fs-sm); color: var(--ink-muted); }
+    code, kbd, pre { font-family: var(--font-mono); font-size: 0.9375rem; }
+    code { background: color-mix(in srgb, var(--ink) 8%, transparent); padding: 0 0.3em; border-radius: var(--radius-sm); }
+
+    /* ============================================================
+       COMPONENT — Buttons
+       Variants: primary · secondary · ghost · danger
+       Sizes:    sm (32) · md (40) · lg (48)
+       Touch target ≥ 44×44 (WCAG 2.5.5)
+       ============================================================ */
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-2);
+      min-height: 40px;
+      padding: 0 var(--space-4);
+      font: inherit;
+      font-weight: var(--fw-medium);
+      border-radius: var(--radius-md);
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--ink);
+      cursor: pointer;
+      transition: background var(--dur-fast) var(--ease-standard),
+                  color var(--dur-fast) var(--ease-standard),
+                  border-color var(--dur-fast) var(--ease-standard),
+                  transform var(--dur-fast) var(--ease-standard);
+    }
+    .btn:active { transform: translateY(1px); }
+
+    .btn--primary   { background: var(--brand); color: var(--brand-ink); }
+    .btn--primary:hover { background: var(--brand-hover); }
+
+    .btn--secondary { background: var(--surface); color: var(--ink); border-color: var(--border-strong); }
+    .btn--secondary:hover { background: color-mix(in srgb, var(--ink) 6%, var(--surface)); }
+
+    .btn--ghost     { color: var(--ink); }
+    .btn--ghost:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
+
+    .btn--danger    { background: var(--danger); color: #fff; }
+
+    .btn--sm { min-height: 32px; padding: 0 var(--space-3); font-size: var(--fs-sm); }
+    .btn--lg { min-height: 48px; padding: 0 var(--space-5); font-size: 1.0625rem; }
+
+    /* Unified disabled rule */
+    .btn[disabled],
+    [disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       COMPONENT — Form
+       ============================================================ */
+
+    .field { display: grid; gap: var(--space-2); margin-block-end: var(--space-4); }
+    .field__label { font-size: var(--fs-sm); font-weight: var(--fw-medium); color: var(--ink); }
+    .field__req { color: var(--danger); margin-inline-start: 2px; }
+    .field__hint { font-size: var(--fs-xs); color: var(--ink-muted); }
+    .field__error { font-size: var(--fs-xs); color: var(--danger); }
+
+    .input, .textarea, .select {
+      width: 100%;
+      min-height: 40px;
+      padding: 0 var(--space-3);
+      background: var(--surface);
+      color: var(--ink);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-md);
+      font: inherit;
+      transition: border-color var(--dur-fast) var(--ease-standard),
+                  box-shadow var(--dur-fast) var(--ease-standard);
+    }
+    .textarea { min-height: 96px; padding: var(--space-3); resize: vertical; }
+    .input:focus-visible, .textarea:focus-visible, .select:focus-visible {
+      border-color: var(--brand);
+      outline: none;
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 30%, transparent);
+    }
+    .input[aria-invalid="true"] {
+      border-color: var(--danger);
+    }
+
+    /* ============================================================
+       COMPONENT — Badge / Chip / Pill
+       Closed taxonomy — see §9.3 in the .md
+       ============================================================ */
+
+    .badge, .chip, .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-1);
+      padding: 2px var(--space-2);
+      font-size: var(--fs-xs);
+      font-weight: var(--fw-medium);
+      border-radius: var(--radius-pill);
+    }
+    .badge--success { background: color-mix(in srgb, var(--success) 20%, transparent); color: var(--success); }
+    .badge--warning { background: color-mix(in srgb, var(--warning) 20%, transparent); color: var(--warning); }
+    .badge--danger  { background: color-mix(in srgb, var(--danger)  20%, transparent); color: var(--danger); }
+    .badge--info    { background: color-mix(in srgb, var(--info)    20%, transparent); color: var(--info); }
+
+    /* ============================================================
+       COMPONENT — Alert
+       ============================================================ */
+
+    .alert {
+      display: flex;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-inline-start: 4px solid var(--info);
+      border-radius: var(--radius-md);
+      margin-block-end: var(--space-3);
+    }
+    .alert--success { border-inline-start-color: var(--success); }
+    .alert--warning { border-inline-start-color: var(--warning); }
+    .alert--danger  { border-inline-start-color: var(--danger); }
+    .alert__title   { font-weight: var(--fw-semibold); margin-block-end: var(--space-1); }
+    .alert__body    { color: var(--ink-muted); font-size: var(--fs-sm); }
+
+    /* ============================================================
+       COMPONENT — Card
+       ============================================================ */
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-5);
+      box-shadow: var(--elev-1);
+      transition: box-shadow var(--dur-base) var(--ease-standard),
+                  transform var(--dur-base) var(--ease-standard);
+    }
+    .card--interactive:hover { box-shadow: var(--elev-2); transform: translateY(-1px); }
+
+    /* ============================================================
+       SHOWCASE GRID
+       ============================================================ */
+
+    .grid { display: grid; gap: var(--space-4); }
+    .grid--tokens { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+    .grid--cards  { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+
+    .swatch {
+      display: grid;
+      gap: var(--space-2);
+      padding: var(--space-3);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+    }
+    .swatch__chip {
+      block-size: 60px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    .swatch__name { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--ink-muted); }
+    .swatch__val  { font-family: var(--font-mono); font-size: var(--fs-xs); }
+
+    .type-row { display: grid; grid-template-columns: 8rem 1fr; gap: var(--space-4); align-items: baseline; padding: var(--space-3) 0; border-block-end: 1px solid var(--border); }
+    .type-row__label { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--ink-muted); }
+
+    .space-row { display: flex; align-items: center; gap: var(--space-3); padding: var(--space-2) 0; }
+    .space-row__bar { block-size: 12px; background: var(--brand); border-radius: 2px; }
+    .space-row__label { font-family: var(--font-mono); font-size: var(--fs-xs); color: var(--ink-muted); min-width: 8rem; }
+
+    .radius-tile {
+      block-size: 80px;
+      background: color-mix(in srgb, var(--brand) 15%, var(--surface));
+      border: 1px solid var(--brand);
+      display: grid;
+      place-items: center;
+      font-family: var(--font-mono);
+      font-size: var(--fs-xs);
+    }
+
+    .elev-tile {
+      background: var(--surface);
+      padding: var(--space-5);
+      border-radius: var(--radius-md);
+      text-align: center;
+      font-family: var(--font-mono);
+      font-size: var(--fs-xs);
+    }
+
+    /* ============================================================
+       REDUCED MOTION
+       ============================================================ */
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* ============================================================
+       REDUCED TRANSPARENCY / CONTRAST
+       ============================================================ */
+
+    @media (prefers-reduced-transparency: reduce) {
+      .topbar { background: var(--bg); backdrop-filter: none; }
+    }
+    @media (prefers-contrast: more) {
+      :root { --border: currentColor; --border-strong: currentColor; }
+    }
+
+    /* ============================================================
+       PRINT
+       ============================================================ */
+
+    @media print {
+      .topbar, .no-print, .tpl-notice { display: none !important; }
+      body { background: #fff; color: #000; }
+      .card { box-shadow: none; border-color: #000; }
+    }
+
+    /* ============================================================
+       TEMPLATE NOTICE (⚠️ template-only chrome — NOT part of the design system)
+       ============================================================ */
+
+    .tpl-notice {
+      background: repeating-linear-gradient(45deg,
+        color-mix(in srgb, var(--warning) 12%, transparent) 0 12px,
+        color-mix(in srgb, var(--warning) 20%, transparent) 12px 24px);
+      border: 2px dashed var(--warning);
+      border-radius: var(--radius-md);
+      padding: var(--space-4);
+      margin: var(--space-4) 0;
+      color: var(--ink);
+    }
+    .tpl-notice__title {
+      font-weight: var(--fw-bold);
+      color: var(--warning);
+      margin-block-end: var(--space-2);
+    }
+    .tpl-default {
+      display: inline-block;
+      background: color-mix(in srgb, var(--warning) 20%, transparent);
+      color: var(--warning);
+      font-family: var(--font-mono);
+      font-size: var(--fs-xs);
+      padding: 1px 6px;
+      border-radius: var(--radius-sm);
+      border: 1px solid color-mix(in srgb, var(--warning) 40%, transparent);
+      margin-inline-start: var(--space-2);
+      vertical-align: middle;
+    }
+    .tpl-default::before { content: "⟨default⟩ "; opacity: .8; }
+
+    .defaults-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-block: var(--space-4);
+    }
+    .defaults-table th, .defaults-table td {
+      text-align: start;
+      padding: var(--space-2) var(--space-3);
+      border-block-end: 1px solid var(--border);
+      font-size: var(--fs-sm);
+    }
+    .defaults-table th {
+      font-weight: var(--fw-semibold);
+      background: color-mix(in srgb, var(--ink) 4%, transparent);
+    }
+    .defaults-table code {
+      font-size: var(--fs-xs);
+      background: transparent;
+      color: var(--ink-muted);
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="topbar" role="banner">
+    <div class="topbar__inner">
+      <span class="topbar__title">&lt;Product&gt; — Design System Template</span>
+      <span class="topbar__spacer"></span>
+
+      <div role="group" aria-label="Direction toggle">
+        <button class="btn btn--ghost btn--sm" data-dir="ltr" aria-pressed="true">LTR</button>
+        <button class="btn btn--ghost btn--sm" data-dir="rtl" aria-pressed="false">RTL</button>
+      </div>
+
+      <div role="group" aria-label="Theme toggle">
+        <button class="btn btn--ghost btn--sm" data-theme-btn="light" aria-pressed="true">Light</button>
+        <button class="btn btn--ghost btn--sm" data-theme-btn="dark"  aria-pressed="false">Dark</button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="page" role="main">
+    <div class="tpl-notice" role="note" aria-labelledby="tpl-notice-t">
+      <div class="tpl-notice__title" id="tpl-notice-t">⚠️ TEMPLATE PREVIEW — every value below is a placeholder</div>
+      <p style="margin: 0 0 var(--space-2)">
+        This page is the visual companion to <code>design-system-template.md</code>. It is a <strong>skeleton</strong>, not a shipping design system.
+      </p>
+      <ul style="margin: 0; padding-inline-start: var(--space-5);">
+        <li>Every token value (color, size, radius, shadow, timing) is a <strong>template default</strong> — replace with product-specific values inherited from the brand source.</li>
+        <li>Every layout decision in §13 (header height, sidebar width, footer columns, grid gap, breakpoints…) is marked <span class="tpl-default">value</span>. Consciously accept or override each one.</li>
+        <li>Keep the <strong>structure</strong> — section list, closed sets, token names. Change the <strong>values</strong>.</li>
+        <li>A shipped design system that still contains the <code>⟨default⟩</code> marker or this notice = automatic 🔴 in review.</li>
+      </ul>
+    </div>
+
+    <section aria-labelledby="intro">
+      <h1 id="intro">&lt;Product&gt; design system</h1>
+      <p>
+        Visual companion to <code>design-system-template.md</code>.
+        Replace <em>every</em> placeholder token (color, type, spacing) with the values inherited from the brand source.
+        Structure — the section list, the taxonomy, the closed sets — should not change.
+      </p>
+      <p>
+        <small>Toggle direction and theme in the top bar. Every declared preference (<code>prefers-color-scheme</code>, <code>prefers-reduced-motion</code>, <code>prefers-contrast</code>, <code>prefers-reduced-transparency</code>) is honoured.</small>
+      </p>
+    </section>
+
+    <section aria-labelledby="s-color">
+      <h2 id="s-color">1. Color</h2>
+      <p>Reference theme tokens (<code>--bg</code>, <code>--surface</code>, <code>--ink</code>…), never raw hex. Named brand swatches appear only where the theme map is defined.</p>
+
+      <h3>Theme-bound surfaces</h3>
+      <div class="grid grid--tokens" role="list">
+        <div class="swatch" role="listitem">
+          <div class="swatch__chip" style="background: var(--bg)"></div>
+          <span class="swatch__name">--bg</span>
+          <span class="swatch__val">page background</span>
+        </div>
+        <div class="swatch" role="listitem">
+          <div class="swatch__chip" style="background: var(--surface)"></div>
+          <span class="swatch__name">--surface</span>
+          <span class="swatch__val">card / panel</span>
+        </div>
+        <div class="swatch" role="listitem">
+          <div class="swatch__chip" style="background: var(--surface-raised)"></div>
+          <span class="swatch__name">--surface-raised</span>
+          <span class="swatch__val">elevated surface</span>
+        </div>
+        <div class="swatch" role="listitem">
+          <div class="swatch__chip" style="background: var(--ink)"></div>
+          <span class="swatch__name">--ink</span>
+          <span class="swatch__val">primary text (≥ 7:1)</span>
+        </div>
+        <div class="swatch" role="listitem">
+          <div class="swatch__chip" style="background: var(--ink-muted)"></div>
+          <span class="swatch__name">--ink-muted</span>
+          <span class="swatch__val">secondary text (≥ 4.5:1)</span>
+        </div>
+        <div class="swatch" role="listitem">
+          <div class="swatch__chip" style="background: var(--border)"></div>
+          <span class="swatch__name">--border</span>
+          <span class="swatch__val">hairline</span>
+        </div>
+      </div>
+
+      <h3>Brand + functional feedback</h3>
+      <div class="grid grid--tokens" role="list">
+        <div class="swatch" role="listitem">
+          <div class="swatch__chip" style="background: var(--brand)"></div>
+          <span class="swatch__name">--brand</span>
+        </div>
+        <div class="swatch" role="listitem">
+          <div class="swatch__chip" style="background: var(--success)"></div>
+          <span class="swatch__name">--success</span>
+        </div>
+        <div class="swatch" role="listitem">
+          <div class="swatch__chip" style="background: var(--warning)"></div>
+          <span class="swatch__name">--warning</span>
+        </div>
+        <div class="swatch" role="listitem">
+          <div class="swatch__chip" style="background: var(--danger)"></div>
+          <span class="swatch__name">--danger</span>
+        </div>
+        <div class="swatch" role="listitem">
+          <div class="swatch__chip" style="background: var(--info)"></div>
+          <span class="swatch__name">--info</span>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-type">
+      <h2 id="s-type">2. Typography</h2>
+      <p>Scale assigned to <strong>roles</strong>, not raw sizes. Modular ratio: Perfect Fourth (1.333).</p>
+      <div class="type-row"><span class="type-row__label">display</span><span style="font-size: var(--fs-display); font-weight: var(--fw-bold); line-height: var(--lh-tight)">Display</span></div>
+      <div class="type-row"><span class="type-row__label">h1</span><span style="font-size: var(--fs-h1); font-weight: var(--fw-bold)">Heading 1</span></div>
+      <div class="type-row"><span class="type-row__label">h2</span><span style="font-size: var(--fs-h2); font-weight: var(--fw-bold)">Heading 2</span></div>
+      <div class="type-row"><span class="type-row__label">h3</span><span style="font-size: var(--fs-h3); font-weight: var(--fw-semibold)">Heading 3</span></div>
+      <div class="type-row"><span class="type-row__label">body</span><span style="font-size: var(--fs-body)">The quick brown fox jumps over the lazy dog. 0123456789</span></div>
+      <div class="type-row"><span class="type-row__label">body-sm</span><span style="font-size: var(--fs-sm)">Meta text — 0123456789</span></div>
+      <div class="type-row"><span class="type-row__label">caption</span><span style="font-size: var(--fs-xs)">Caption / micro</span></div>
+      <div class="type-row"><span class="type-row__label">code</span><code>const scale = 1.333;</code></div>
+    </section>
+
+    <section aria-labelledby="s-space">
+      <h2 id="s-space">3. Spacing (4pt grid)</h2>
+      <div class="space-row"><span class="space-row__label">--space-1 (4)</span>  <div class="space-row__bar" style="inline-size: var(--space-1)"></div></div>
+      <div class="space-row"><span class="space-row__label">--space-2 (8)</span>  <div class="space-row__bar" style="inline-size: var(--space-2)"></div></div>
+      <div class="space-row"><span class="space-row__label">--space-3 (12)</span> <div class="space-row__bar" style="inline-size: var(--space-3)"></div></div>
+      <div class="space-row"><span class="space-row__label">--space-4 (16)</span> <div class="space-row__bar" style="inline-size: var(--space-4)"></div></div>
+      <div class="space-row"><span class="space-row__label">--space-5 (24)</span> <div class="space-row__bar" style="inline-size: var(--space-5)"></div></div>
+      <div class="space-row"><span class="space-row__label">--space-6 (32)</span> <div class="space-row__bar" style="inline-size: var(--space-6)"></div></div>
+      <div class="space-row"><span class="space-row__label">--space-7 (40)</span> <div class="space-row__bar" style="inline-size: var(--space-7)"></div></div>
+      <div class="space-row"><span class="space-row__label">--space-8 (48)</span> <div class="space-row__bar" style="inline-size: var(--space-8)"></div></div>
+      <div class="space-row"><span class="space-row__label">--space-9 (64)</span> <div class="space-row__bar" style="inline-size: var(--space-9)"></div></div>
+      <div class="space-row"><span class="space-row__label">--space-10 (96)</span><div class="space-row__bar" style="inline-size: var(--space-10)"></div></div>
+    </section>
+
+    <section aria-labelledby="s-radii">
+      <h2 id="s-radii">4. Radii</h2>
+      <div class="grid grid--tokens">
+        <div class="radius-tile" style="border-radius: var(--radius-none)">none</div>
+        <div class="radius-tile" style="border-radius: var(--radius-sm)">sm 4</div>
+        <div class="radius-tile" style="border-radius: var(--radius-md)">md 8</div>
+        <div class="radius-tile" style="border-radius: var(--radius-lg)">lg 16</div>
+        <div class="radius-tile" style="border-radius: var(--radius-pill)">pill</div>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-elev">
+      <h2 id="s-elev">5. Elevation</h2>
+      <div class="grid grid--cards">
+        <div class="elev-tile" style="box-shadow: var(--elev-1)">--elev-1 · card resting</div>
+        <div class="elev-tile" style="box-shadow: var(--elev-2)">--elev-2 · card hover</div>
+        <div class="elev-tile" style="box-shadow: var(--elev-3)">--elev-3 · popover</div>
+        <div class="elev-tile" style="box-shadow: var(--elev-4)">--elev-4 · modal</div>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-buttons">
+      <h2 id="s-buttons">6. Buttons</h2>
+      <p>Variants × sizes × states. Touch target ≥ 44×44 (WCAG 2.5.5). Unified <code>[disabled]</code> rule.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center;">
+        <button class="btn btn--primary">Primary</button>
+        <button class="btn btn--secondary">Secondary</button>
+        <button class="btn btn--ghost">Ghost</button>
+        <button class="btn btn--danger">Danger</button>
+        <button class="btn btn--primary btn--sm">sm</button>
+        <button class="btn btn--primary">md</button>
+        <button class="btn btn--primary btn--lg">lg</button>
+        <button class="btn btn--primary" disabled>Disabled</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-forms">
+      <h2 id="s-forms">7. Forms</h2>
+      <form onsubmit="event.preventDefault()" style="max-width: 480px">
+        <div class="field">
+          <label class="field__label" for="ex-name">Full name<span class="field__req" aria-hidden="true">*</span></label>
+          <input id="ex-name" class="input" type="text" aria-required="true" aria-describedby="ex-name-hint" />
+          <span id="ex-name-hint" class="field__hint">As on your official ID.</span>
+        </div>
+        <div class="field">
+          <label class="field__label" for="ex-email">Email</label>
+          <input id="ex-email" class="input" type="email" aria-invalid="true" aria-describedby="ex-email-err" />
+          <span id="ex-email-err" class="field__error" role="alert">Enter a valid email.</span>
+        </div>
+        <div class="field">
+          <label class="field__label" for="ex-msg">Message</label>
+          <textarea id="ex-msg" class="textarea" rows="4"></textarea>
+        </div>
+        <button class="btn btn--primary" type="submit">Submit</button>
+      </form>
+    </section>
+
+    <section aria-labelledby="s-badges">
+      <h2 id="s-badges">8. Badges (closed taxonomy)</h2>
+      <p><strong>Badge</strong> — passive status. <strong>Chip</strong> — filter / selection. <strong>Pill</strong> — navigational tag. See §9.3 in the spec for the closed set.</p>
+      <div style="display: flex; flex-wrap: wrap; gap: var(--space-2);">
+        <span class="badge badge--success">Approved</span>
+        <span class="badge badge--warning">Draft</span>
+        <span class="badge badge--danger">Rejected</span>
+        <span class="badge badge--info">Review</span>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-alerts">
+      <h2 id="s-alerts">9. Alerts</h2>
+      <div class="alert alert--success" role="status">
+        <div>
+          <div class="alert__title">Saved</div>
+          <div class="alert__body">Your changes were saved.</div>
+        </div>
+      </div>
+      <div class="alert alert--warning" role="status">
+        <div>
+          <div class="alert__title">Heads up</div>
+          <div class="alert__body">Some fields need attention before publishing.</div>
+        </div>
+      </div>
+      <div class="alert alert--danger" role="alert">
+        <div>
+          <div class="alert__title">Action failed</div>
+          <div class="alert__body">Retry, or contact support if it persists.</div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-cards">
+      <h2 id="s-cards">10. Cards</h2>
+      <div class="grid grid--cards">
+        <article class="card">
+          <h3 style="margin-block-start: 0">Base card</h3>
+          <p style="margin-block-end: 0"><small>Resting elevation. Content surface.</small></p>
+        </article>
+        <article class="card card--interactive" tabindex="0" role="button">
+          <h3 style="margin-block-start: 0">Interactive card</h3>
+          <p style="margin-block-end: 0"><small>Whole hit-area is one button (Fitts's law).</small></p>
+        </article>
+        <article class="card">
+          <h3 style="margin-block-start: 0">Stat</h3>
+          <div style="font-size: var(--fs-h1); font-weight: var(--fw-bold); font-variant-numeric: tabular-nums">1,204</div>
+          <small>+12.4% vs last week</small>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-a11y">
+      <h2 id="s-a11y">11. Accessibility baseline (WCAG 2.2 AA)</h2>
+      <ul>
+        <li>Body text contrast ≥ 4.5:1; UI ≥ 3:1; focus ring ≥ 3:1.</li>
+        <li>Every focusable shows a visible ring (never <code>outline: none</code> without a replacement).</li>
+        <li>Every action reachable + operable by keyboard.</li>
+        <li>Uses <a href="https://www.w3.org/WAI/ARIA/apg/">WAI-ARIA APG</a> patterns verbatim; roles are not invented.</li>
+        <li>Respects <code>prefers-reduced-motion</code>, <code>prefers-contrast</code>, <code>prefers-reduced-transparency</code>.</li>
+        <li>Target size ≥ 24×24 (SC 2.5.8); 44×44 recommended.</li>
+        <li>Skip-to-content is the first focusable element on every page.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="s-rtl">
+      <h2 id="s-rtl">12. RTL / directional rules</h2>
+      <ul>
+        <li>CSS logical properties only — <code>margin-inline-start</code>, <code>padding-inline-end</code>, <code>inset-inline-start</code> — never <code>left</code>/<code>right</code>.</li>
+        <li>Sidenav sits on the reading-start edge.</li>
+        <li>Directional icons mirror via <code>transform: scaleX(-1)</code> under <code>[dir="rtl"]</code>.</li>
+        <li>Numbers, URLs, code isolate via <code>&lt;bdi&gt;</code>.</li>
+        <li>Machine feeds (JSON-LD, RSS, <code>&lt;time datetime&gt;</code>) always use ASCII digits + ISO 8601 Gregorian.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="s-layout">
+      <h2 id="s-layout">13. Layout decisions (TEMPLATE DEFAULTS — REPLACE per product)</h2>
+
+      <div class="tpl-notice" role="note">
+        <div class="tpl-notice__title">These are <em>skeleton</em> answers, not <em>product</em> answers</div>
+        <p style="margin: 0">Every row below is a value the foundational tokens (§1–§7) do <strong>not</strong> answer on their own — header height, sidebar width, footer columns, grid gap, mobile nav pattern, motion mapping, SEO placement, and so on. Two teams building from the same tokens can produce visually incoherent surfaces if these decisions aren't pinned. The values here are chosen to make the skeleton runnable; <strong>they are not recommendations for your product</strong>. Override per product, then remove the <span class="tpl-default">value</span> tag from each row you consciously accept.</p>
+      </div>
+
+      <h3>13.1 Page grid + content width</h3>
+      <table class="defaults-table">
+        <thead><tr><th>Token</th><th>Value</th><th>Purpose</th></tr></thead>
+        <tbody>
+          <tr><td><code>--page-max</code></td><td><code>1200px</code> <span class="tpl-default">value</span></td><td>App shell max width.</td></tr>
+          <tr><td><code>--content-max-prose</code></td><td><code>72ch</code> <span class="tpl-default">value</span></td><td>Article body — readable measure.</td></tr>
+          <tr><td><code>--content-max-dash</code></td><td><code>1200px</code> <span class="tpl-default">value</span></td><td>Dashboard body.</td></tr>
+          <tr><td><code>--content-max-form</code></td><td><code>480px</code> <span class="tpl-default">value</span></td><td>Single-column form.</td></tr>
+          <tr><td><code>--sidebar-w</code></td><td><code>280px</code> <span class="tpl-default">value</span></td><td>Fixed sidebar width.</td></tr>
+          <tr><td>Shell templates</td><td><code>1fr</code> · <code>1fr 280px</code> · <code>280px 1fr</code> <span class="tpl-default">value</span></td><td>Closed set.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.2 Card grid + columns per breakpoint</h3>
+      <table class="defaults-table">
+        <thead><tr><th>Rule</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td><code>--gap-cards</code></td><td><code>--space-5 (24px)</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Mobile (&lt;640)</td><td><code>1</code> col <span class="tpl-default">value</span></td></tr>
+          <tr><td>Tablet (≥640)</td><td><code>2</code> col <span class="tpl-default">value</span></td></tr>
+          <tr><td>Desktop (≥1024)</td><td><code>3</code> col <span class="tpl-default">value</span></td></tr>
+          <tr><td>Wide (≥1280)</td><td><code>4</code> col (dense only) <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.3 Header / topbar</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td><code>--header-h</code></td><td><code>64px</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Header padding-inline</td><td><code>--space-4</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Nav item gap</td><td><code>--space-4</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>CTA position</td><td>End of nav <span class="tpl-default">value</span></td></tr>
+          <tr><td>Scroll behavior</td><td>Sticky · <code>--elev-2</code> after 8px scroll · no shrink <span class="tpl-default">value</span></td></tr>
+          <tr><td>Mobile nav pattern</td><td>Hamburger → drawer from reading-start edge <span class="tpl-default">value</span></td></tr>
+          <tr><td>Search</td><td>Icon in topbar → opens <code>⌘K</code> palette <span class="tpl-default">value</span></td></tr>
+          <tr><td>Theme toggle</td><td>Icon-only, before avatar <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.4 Footer</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td>Columns (desktop / tablet / mobile)</td><td><code>4 / 2 / 1</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Column order</td><td>Sitemap → Product → Company → Contact <span class="tpl-default">value</span></td></tr>
+          <tr><td><code>--footer-pad-y</code></td><td><code>--space-8 (48px)</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Background</td><td><code>--surface</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Border-block-start</td><td><code>1px solid var(--border)</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Copyright row</td><td>Own row below columns <span class="tpl-default">value</span></td></tr>
+          <tr><td>Trust seals (if applicable)</td><td>Own row above copyright, seal height <code>80px</code> <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.5 Hero</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td><code>--hero-min-h</code></td><td><code>480px</code> desktop · <code>auto</code> mobile <span class="tpl-default">value</span></td></tr>
+          <tr><td>Text alignment</td><td><code>start</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Eyebrow position</td><td>Above heading <span class="tpl-default">value</span></td></tr>
+          <tr><td>CTA stacking (mobile)</td><td>Vertical stack, primary first <span class="tpl-default">value</span></td></tr>
+          <tr><td>Media placement</td><td>End-edge on desktop; hidden on mobile <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.6 Card internals</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td><code>--card-pad</code></td><td><code>--space-5</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Card radius</td><td><code>--radius-lg</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Thumbnail ratio</td><td><code>16 / 9</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Meta position</td><td>Below title, above body <span class="tpl-default">value</span></td></tr>
+          <tr><td>Category label position</td><td>On thumbnail, top-inline-start <span class="tpl-default">value</span></td></tr>
+          <tr><td>Hover transform</td><td><code>translateY(-2px)</code> + <code>--elev-2</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Border</td><td><code>1px solid var(--border)</code> <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.7 Typography rhythm</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td><code>--rhythm-h-to-p</code></td><td><code>--space-2</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td><code>--rhythm-p-to-p</code></td><td><code>--space-4</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td><code>--section-gap-y</code></td><td><code>--space-8</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Eyebrow</td><td>Optional; <code>--fs-xs</code>, <code>--fw-medium</code>, <code>--ink-muted</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Display size</td><td><code>clamp(2.5rem, 4vw + 1rem, 4rem)</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Body <code>text-align</code></td><td><code>start</code> (never <code>justify</code>) <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.8 Button internals</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td>Padding — sm</td><td>block <code>--space-1</code> · inline <code>--space-3</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Padding — md</td><td>block <code>--space-2</code> · inline <code>--space-4</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Padding — lg</td><td>block <code>--space-3</code> · inline <code>--space-5</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td><code>--btn-min-w</code></td><td><code>88px</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Icon-text gap</td><td><code>--space-2</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Hero button width</td><td><code>auto</code> desktop · <code>100%</code> mobile <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.9 Form internals</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td><code>--input-h</code></td><td><code>40px</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Input padding-inline</td><td><code>--space-3</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Label position</td><td>Above input, all breakpoints <span class="tpl-default">value</span></td></tr>
+          <tr><td>Form container width</td><td><code>480px</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Field gap</td><td><code>--space-4</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Error position</td><td>Below input, linked via <code>aria-describedby</code> <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.10 Table</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td>Row padding</td><td>block <code>--space-3</code> · inline <code>--space-4</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Sticky header</td><td>On <span class="tpl-default">value</span></td></tr>
+          <tr><td>Row divider</td><td><code>border-block-end: 1px solid var(--border)</code> · no zebra <span class="tpl-default">value</span></td></tr>
+          <tr><td>Row hover bg</td><td><code>color-mix(in srgb, var(--ink) 4%, transparent)</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Bulk-action bar</td><td>Above table (replaces header row when selection active) <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.11 Media grid</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td>Columns (mobile / tablet / desktop)</td><td><code>2 / 3 / 4</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Thumbnail ratio</td><td><code>4 / 3</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Gap</td><td><code>--space-3</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Focal-point indicator</td><td>Center dot, <code>--brand</code> fill <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.12 Iconography</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td>Stroke width</td><td><code>1.5px</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Size scale</td><td><code>16 / 20 / 24 / 32</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Vertical align with text</td><td><code>middle</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Style</td><td>Outline default · Filled for state <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.13 Empty / loading / error</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td>Illustration position</td><td>Centered inline, above message <span class="tpl-default">value</span></td></tr>
+          <tr><td>Message length</td><td>One short sentence + one supporting line <span class="tpl-default">value</span></td></tr>
+          <tr><td>Empty CTA</td><td>Primary button, single action <span class="tpl-default">value</span></td></tr>
+          <tr><td>Skeleton pattern</td><td>Shimmer (translateX gradient) <span class="tpl-default">value</span></td></tr>
+          <tr><td>Loading threshold</td><td>Spinner only if wait &gt; 200ms; skeleton immediately <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.14 Microcopy voice</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td>Tone</td><td>Neutral, task-oriented <span class="tpl-default">value</span></td></tr>
+          <tr><td>Error format</td><td>"What went wrong + what to do next" (never blame the user) <span class="tpl-default">value</span></td></tr>
+          <tr><td>Placeholder format</td><td>Example format (<code>example@domain.com</code>) — never repeat the label <span class="tpl-default">value</span></td></tr>
+          <tr><td>Button copy</td><td>Verb + noun (<code>Save changes</code>), sentence case <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.15 Section chrome</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td>Section title alignment</td><td><code>start</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Eyebrow</td><td>Optional <span class="tpl-default">value</span></td></tr>
+          <tr><td>Section divider</td><td>Spacing only (no visible line) <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.16 SEO markup</h3>
+      <table class="defaults-table">
+        <tbody>
+          <tr><td><code>&lt;link rel="canonical"&gt;</code></td><td>First in <code>&lt;head&gt;</code> after <code>meta charset</code> + <code>meta viewport</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>OG image ratio</td><td><code>1200 × 630</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Twitter Card</td><td><code>summary_large_image</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>JSON-LD placement</td><td>End of <code>&lt;body&gt;</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Breadcrumb JSON-LD</td><td>Emitted on every non-home page <span class="tpl-default">value</span></td></tr>
+          <tr><td>Machine feeds</td><td>ASCII digits + ISO 8601 UTC — always <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.17 Motion mapping (closed set)</h3>
+      <table class="defaults-table">
+        <thead><tr><th>Element</th><th>Duration</th><th>Easing</th><th>Transform</th></tr></thead>
+        <tbody>
+          <tr><td>Button hover</td><td><code>--dur-fast</code></td><td><code>--ease-standard</code></td><td>none <span class="tpl-default">value</span></td></tr>
+          <tr><td>Button press</td><td><code>--dur-instant</code></td><td><code>--ease-standard</code></td><td><code>translateY(1px)</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Card hover</td><td><code>--dur-base</code></td><td><code>--ease-standard</code></td><td><code>translateY(-2px)</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Dropdown open</td><td><code>--dur-base</code></td><td><code>--ease-emphasized</code></td><td>opacity + <code>translateY(-4→0)</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Modal enter</td><td><code>--dur-slow</code></td><td><code>--ease-emphasized</code></td><td>opacity + <code>scale(.96→1)</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Modal exit</td><td><code>--dur-base</code></td><td><code>--ease-exit</code></td><td>opacity <span class="tpl-default">value</span></td></tr>
+          <tr><td>Drawer</td><td><code>--dur-slow</code></td><td><code>--ease-emphasized</code></td><td><code>translateX</code> from edge <span class="tpl-default">value</span></td></tr>
+          <tr><td>Nav / topbar</td><td>none</td><td>—</td><td>Never animates <span class="tpl-default">value</span></td></tr>
+          <tr><td>List stagger</td><td>Off</td><td>—</td><td>— <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>13.18 Elevation mapping (closed set)</h3>
+      <table class="defaults-table">
+        <thead><tr><th>Element</th><th>Elevation token</th></tr></thead>
+        <tbody>
+          <tr><td>Card resting</td><td><code>--elev-1</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Card hover</td><td><code>--elev-2</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Sticky topbar (scrolled)</td><td><code>--elev-2</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Dropdown</td><td><code>--elev-3</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Popover</td><td><code>--elev-3</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Drawer</td><td><code>--elev-3</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Modal</td><td><code>--elev-4</code> <span class="tpl-default">value</span></td></tr>
+          <tr><td>Toast</td><td><code>--elev-3</code> <span class="tpl-default">value</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="tpl-notice" role="note" style="margin-block-start: var(--space-6)">
+        <div class="tpl-notice__title">Override checklist</div>
+        <p style="margin: 0">Before shipping the product design system: every <span class="tpl-default">value</span> tag above must be either replaced with a product-specific value or consciously accepted (and the tag removed). An untouched <code>⟨default⟩</code> tag anywhere in §13 = automatic 🔴 in review.</p>
+      </div>
+    </section>
+
+    <footer style="margin-block-start: var(--space-9); padding-block: var(--space-6); border-block-start: 1px solid var(--border); color: var(--ink-muted); font-size: var(--fs-sm);">
+      <p>
+        Version <code>0.1.0</code> · Audited <code>YYYY-MM-DD</code> ·
+        References: <a href="https://www.w3.org/TR/WCAG22/">WCAG 2.2</a> ·
+        <a href="https://www.w3.org/WAI/ARIA/apg/">WAI-ARIA APG</a> ·
+        <a href="https://www.w3.org/TR/css-logical-1/">CSS Logical Properties</a> ·
+        <a href="https://www.w3.org/community/design-tokens/">W3C Design Tokens CG</a>.
+      </p>
+    </footer>
+  </main>
+
+  <script>
+    // Theme toggle — persists to localStorage; falls back to system preference.
+    (function () {
+      var root = document.documentElement;
+      var stored = null;
+      try { stored = localStorage.getItem('ds-theme'); } catch (_) {}
+      if (stored === 'light' || stored === 'dark') root.setAttribute('data-theme', stored);
+
+      var themeBtns = document.querySelectorAll('[data-theme-btn]');
+      themeBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var t = btn.getAttribute('data-theme-btn');
+          root.setAttribute('data-theme', t);
+          try { localStorage.setItem('ds-theme', t); } catch (_) {}
+          themeBtns.forEach(function (b) {
+            b.setAttribute('aria-pressed', b.getAttribute('data-theme-btn') === t ? 'true' : 'false');
+          });
+        });
+      });
+
+      var dirBtns = document.querySelectorAll('[data-dir]');
+      dirBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var d = btn.getAttribute('data-dir');
+          root.setAttribute('dir', d);
+          dirBtns.forEach(function (b) {
+            b.setAttribute('aria-pressed', b.getAttribute('data-dir') === d ? 'true' : 'false');
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

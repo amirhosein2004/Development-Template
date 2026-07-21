@@ -1,0 +1,38 @@
+# Normalise line endings across platforms
+* text=auto eol=lf
+
+# Text formats
+*.md       text
+*.markdown text
+*.txt      text
+*.json     text
+*.yml      text
+*.yaml     text
+*.toml     text
+*.csv      text
+*.html     text
+*.svg      text
+
+# Shell scripts always LF
+*.sh text eol=lf
+
+# Windows scripts always CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Binary assets
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.webp binary
+*.pdf  binary
+*.zip  binary
+*.gz   binary
+*.tar  binary
+*.woff  binary
+*.woff2 binary
+*.ttf   binary
+*.eot   binary

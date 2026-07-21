@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soradis Delivery Flow</title>
+<style>
+  :root {
+    --bg-1: #0a0f1a;
+    --bg-2: #0d1424;
+    --panel: rgba(22, 27, 34, 0.85);
+    --panel-2: rgba(28, 34, 48, 0.9);
+    --border: rgba(88, 166, 255, 0.15);
+    --border-strong: rgba(88, 166, 255, 0.35);
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --num: #58a6ff;
+    --num-glow: rgba(88, 166, 255, 0.35);
+    --accent: #d2a8ff;
+    --accent-glow: rgba(210, 168, 255, 0.35);
+    --arrow: #6e7681;
+    --rail: linear-gradient(180deg, rgba(88,166,255,0.6), rgba(210,168,255,0.6));
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background:
+      radial-gradient(1200px 800px at 20% -10%, rgba(88,166,255,0.10), transparent 60%),
+      radial-gradient(1000px 700px at 100% 100%, rgba(210,168,255,0.10), transparent 60%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    color: var(--text);
+    margin: 0;
+    padding: 60px 20px 80px;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    width: 100%;
+    max-width: 720px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  header h1 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.7rem;
+    letter-spacing: 0.3px;
+    background: linear-gradient(90deg, #58a6ff, #d2a8ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  header .sub {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 0.85rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+  }
+
+  .rail {
+    position: relative;
+    padding-left: 72px;
+  }
+  .rail::before {
+    content: "";
+    position: absolute;
+    left: 27px;
+    top: 18px;
+    bottom: 18px;
+    width: 2px;
+    background: var(--rail);
+    border-radius: 2px;
+    opacity: 0.55;
+  }
+
+  .step {
+    position: relative;
+    margin-bottom: 22px;
+    padding: 18px 22px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    backdrop-filter: blur(6px);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.03) inset,
+      0 8px 24px rgba(0,0,0,0.35);
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+  .step:hover {
+    transform: translateY(-2px);
+    border-color: var(--border-strong);
+  }
+
+  .num {
+    position: absolute;
+    left: -60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #1f4e8a, #0b2a4a);
+    color: #cfe4ff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+    font-weight: 700;
+    font-size: 1.05rem;
+    border: 1px solid rgba(88,166,255,0.55);
+    box-shadow:
+      0 0 0 4px rgba(10, 15, 26, 1),
+      0 0 0 5px rgba(88, 166, 255, 0.25),
+      0 0 18px var(--num-glow);
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .title {
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: #f0f6fc;
+    letter-spacing: 0.2px;
+  }
+  .title em {
+    font-style: normal;
+    color: var(--accent);
+    margin: 0 6px;
+  }
+
+  .side {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 0.86rem;
+    background: rgba(15, 23, 32, 0.7);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 5px 14px;
+    white-space: nowrap;
+  }
+  .side .glyph {
+    color: var(--accent);
+    font-weight: 700;
+    text-shadow: 0 0 10px var(--accent-glow);
+  }
+
+  .sublist {
+    margin: 14px 0 0;
+    padding: 12px 0 0;
+    border-top: 1px dashed var(--border);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px;
+    list-style: none;
+  }
+  .sublist li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: rgba(15, 23, 32, 0.6);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: #cdd9e5;
+  }
+  .sublist li .idx {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(88,166,255,0.15);
+    color: var(--num);
+    font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+    font-size: 0.72rem;
+    font-weight: 700;
+    border: 1px solid rgba(88,166,255,0.35);
+    flex-shrink: 0;
+  }
+
+  .runtime {
+    margin-top: 32px;
+    padding: 20px 24px;
+    background: linear-gradient(135deg, rgba(210,168,255,0.10), rgba(88,166,255,0.06));
+    border: 1px solid rgba(210,168,255,0.25);
+    border-radius: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px 14px;
+    font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+    font-size: 0.92rem;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.35);
+  }
+  .runtime .node {
+    color: #f0f6fc;
+    font-weight: 600;
+    padding: 6px 12px;
+    background: rgba(15,23,32,0.75);
+    border: 1px solid rgba(210,168,255,0.28);
+    border-radius: 8px;
+    text-shadow: 0 0 12px var(--accent-glow);
+  }
+  .runtime .sep {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  @media (max-width: 560px) {
+    body { padding: 40px 14px 60px; }
+    .rail { padding-left: 60px; }
+    .rail::before { left: 21px; }
+    .num { left: -52px; width: 38px; height: 38px; font-size: 0.95rem; }
+    header h1 { font-size: 1.4rem; }
+  }
+
+  /* ============================================================
+     Backend Library Evolution Flow — standalone section, keep
+     visually separated from the delivery flow above.
+     ============================================================ */
+
+  .divider {
+    margin: 100px auto 60px;
+    max-width: 720px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.78rem;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    position: relative;
+  }
+  .divider::before, .divider::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border-strong), transparent);
+  }
+  .divider::before { left: 0; }
+  .divider::after  { right: 0; }
+
+  .evo-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+  .evo-header h2 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.4rem;
+    letter-spacing: 0.3px;
+    background: linear-gradient(90deg, #d2a8ff, #58a6ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .evo-header .sub {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 0.82rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .phase {
+    margin: 28px 0;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, rgba(210,168,255,0.08), rgba(88,166,255,0.04));
+    border-left: 3px solid var(--accent);
+    border-radius: 0 12px 12px 0;
+    color: var(--text);
+    font-weight: 600;
+    letter-spacing: 0.4px;
+  }
+  .phase .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+    font-size: 0.78rem;
+    color: var(--accent);
+    background: rgba(210, 168, 255, 0.12);
+    border: 1px solid rgba(210, 168, 255, 0.28);
+    padding: 2px 10px;
+    border-radius: 999px;
+    margin-right: 12px;
+    text-shadow: 0 0 8px var(--accent-glow);
+  }
+
+  .cmd-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .cmd-list > li {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+    padding: 14px 16px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    align-items: start;
+  }
+  .cmd-list > li:hover { border-color: var(--border-strong); }
+  .cmd-list .badge {
+    font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--num);
+    background: rgba(88,166,255,0.10);
+    border: 1px solid rgba(88,166,255,0.35);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    text-shadow: 0 0 8px var(--num-glow);
+  }
+  .cmd-list .body { min-width: 0; }
+  .cmd-list .body .name {
+    font-weight: 600;
+    color: #f0f6fc;
+    font-size: 0.95rem;
+    display: block;
+    margin-bottom: 6px;
+  }
+  .cmd-list .body code {
+    display: block;
+    font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+    font-size: 0.85rem;
+    color: #cdd9e5;
+    background: rgba(15, 23, 32, 0.85);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    margin-top: 2px;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .cmd-list .body .note {
+    display: block;
+    color: var(--muted);
+    font-size: 0.82rem;
+    margin-top: 8px;
+    line-height: 1.55;
+  }
+
+  .cmd-list > li.human {
+    background: linear-gradient(135deg, rgba(240,180,41,0.08), rgba(240,180,41,0.02));
+    border-color: rgba(240,180,41,0.35);
+  }
+  .cmd-list > li.human .badge {
+    color: #f0b429;
+    background: rgba(240,180,41,0.12);
+    border-color: rgba(240,180,41,0.45);
+    text-shadow: 0 0 8px rgba(240,180,41,0.4);
+  }
+  .cmd-list > li.readonly {
+    background: linear-gradient(135deg, rgba(139,148,158,0.08), rgba(139,148,158,0.02));
+    border-color: rgba(139,148,158,0.35);
+  }
+  .cmd-list > li.readonly .badge {
+    color: var(--muted);
+    background: rgba(139,148,158,0.10);
+    border-color: rgba(139,148,158,0.4);
+    text-shadow: none;
+  }
+
+  .qa {
+    margin-top: 44px;
+    padding: 22px 26px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+  }
+  .qa h3 {
+    margin: 0 0 14px;
+    font-size: 0.9rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .qa .q {
+    font-weight: 600;
+    color: #f0f6fc;
+    margin: 14px 0 6px;
+    font-size: 0.95rem;
+  }
+  .qa .q .idx {
+    display: inline-block;
+    color: var(--num);
+    font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+    font-size: 0.85rem;
+    margin-right: 8px;
+  }
+  .qa .a {
+    color: #cdd9e5;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    margin: 0 0 10px;
+  }
+  .qa .a code {
+    font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+    font-size: 0.82rem;
+    background: rgba(15,23,32,0.85);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: #cdd9e5;
+  }
+
+  .loop {
+    margin-top: 32px;
+    padding: 16px 22px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(88,166,255,0.10), rgba(210,168,255,0.06));
+    border: 1px dashed rgba(210,168,255,0.35);
+    border-radius: 12px;
+    color: var(--muted);
+    font-size: 0.88rem;
+    letter-spacing: 0.3px;
+  }
+  .loop .arrow {
+    color: var(--accent);
+    font-weight: 700;
+    margin: 0 8px;
+  }
+
+  [dir="rtl"] .cmd-list > li {
+    grid-template-columns: 44px 1fr;
+  }
+  [dir="rtl"] .phase {
+    border-left: none;
+    border-right: 3px solid var(--accent);
+    border-radius: 12px 0 0 12px;
+  }
+  [dir="rtl"] .phase .tag { margin-right: 0; margin-left: 12px; }
+  [dir="rtl"] .qa .q .idx { margin-right: 0; margin-left: 8px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Soradis Delivery Flow</h1>
+      <div class="sub">Business → Runtime</div>
+    </header>
+
+    <div class="rail">
+
+      <div class="step">
+        <div class="num">0</div>
+        <div class="row">
+          <div class="title">Business</div>
+          <div class="side"><span class="glyph">→</span>Name, Domain, Logo</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">1</div>
+        <div class="row">
+          <div class="title">Features</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">2</div>
+        <div class="row">
+          <div class="title">System Design</div>
+          <div class="side"><span class="glyph">→</span>Architecture, Repositories</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">3</div>
+        <div class="row">
+          <div class="title">Tech Docs <em>and</em> ✎ Claude Docs</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">4</div>
+        <div class="row">
+          <div class="title">UI/UX</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="num">5</div>
+        <div class="row">
+          <div class="title">PRD-TDD</div>
+        </div>
+        <ul class="sublist">
+          <li><span class="idx">1</span>Backend</li>
+          <li><span class="idx">2</span>Frontend</li>
+          <li><span class="idx">3</span>Infrastructure</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="num">6</div>
+        <div class="row">
+          <div class="title">Code</div>
+        </div>
+        <ul class="sublist">
+          <li><span class="idx">1</span>Backend</li>
+          <li><span class="idx">2</span>Infrastructure</li>
+          <li><span class="idx">3</span>Frontend</li>
+        </ul>
+      </div>
+
+      <div class="step">
+        <div class="num">7</div>
+        <div class="row">
+          <div class="title">Tests</div>
+          <div class="side"><span class="glyph">→</span>Backend / Frontend</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="runtime">
+      <span class="node">Databases</span><span class="sep">→</span>
+      <span class="node">Code</span><span class="sep">→</span>
+      <span class="node">NGINX</span><span class="sep">→</span>
+      <span class="node">Monitoring</span><span class="sep">→</span>
+      <span class="node">E2E Tests</span><span class="sep">→</span>
+      <span class="node">Debugging</span><span class="sep">→</span>
+      <span class="node">Deployment</span>
+    </div>
+
+    <div class="divider">Backend library loop</div>
+
+    <section dir="rtl" lang="fa">
+      <div class="evo-header">
+        <h2>روال ساخت و تکامل backend-shared-logic</h2>
+        <div class="sub">Docs · Code · Loop · PRD-TDD authoritative</div>
+      </div>
+
+      <div class="phase"><span class="tag">فاز A</span>Docs — نوشتن PRD-TDD</div>
+      <ul class="cmd-list">
+        <li>
+          <div class="badge">A1</div>
+          <div class="body">
+            <span class="name">PRD-TDD هفت service</span>
+            <code>/hp-docs prd-tdd-backend &lt;repo&gt; ::overwrite</code>
+            <span class="note">هفت بار — یکی برای هر backend service. بعد از هر MR merge شود تا A2 sibling ها را ببیند.</span>
+          </div>
+        </li>
+        <li>
+          <div class="badge">A2</div>
+          <div class="body">
+            <span class="name">PRD-TDD library</span>
+            <code>/hp-docs prd-tdd-library ::overwrite</code>
+            <span class="note">کل feature catalog (۲۲ section) + هر هفت sibling PRD-TDD کامل را می‌خواند. Ground روی consumer واقعی.</span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="phase"><span class="tag">فاز B</span>Code library MVP</div>
+      <ul class="cmd-list">
+        <li>
+          <div class="badge">B1</div>
+          <div class="body">
+            <span class="name">کد library MVP</span>
+            <code>/hp-implement backend-library</code>
+            <span class="note">ماژول‌های locked-in: Jalali · exception · JWT verify · DbAction · Kavenegar · MinIO/Kafka/Redis adapter · OTel · logging.</span>
+          </div>
+        </li>
+        <li class="human">
+          <div class="badge">B2</div>
+          <div class="body">
+            <span class="name">انسان — تگ release</span>
+            <code>git tag v0.1.0 &amp;&amp; git push origin v0.1.0</code>
+            <span class="note">Release tag روی <code>main</code> — انسانی. Consumer ها این را pin می‌کنند.</span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="phase"><span class="tag">فاز C</span>Code services — library inline رشد می‌کند</div>
+      <ul class="cmd-list">
+        <li>
+          <div class="badge">C1</div>
+          <div class="body">
+            <span class="name">کد service</span>
+            <code>/hp-implement backend-service &lt;repo&gt;</code>
+            <span class="note">کل PRD-TDD library + کل <code>src/</code> library را می‌خواند. Import های service با <code>src/</code> HEAD تطبیق داده می‌شوند.</span>
+          </div>
+        </li>
+        <li>
+          <div class="badge">C2</div>
+          <div class="body">
+            <span class="name">Library promotion inline (auto)</span>
+            <code>(داخل همان run · decision tree · اولین match wins)</code>
+            <span class="note">
+              <b>۱. Standard مجبور می‌کند library</b> (Jalali · JWT · DbAction · adapter · exception · OTel · Kavenegar · ULID · Persian norm · attribute prefixes) → همان run در <code>tech/backend-shared-logic</code> هم می‌نویسد + §17 note<br/>
+              <b>۲. Cross-service utility + foundational + stable</b> → همان کار<br/>
+              <b>۳. Cross-service ولی worthy نیست</b> (domain-carrying · service-specific · likely to diverge) → local + §17 note (<code>considered for library, rejected: reason</code>)<br/>
+              <b>۴. One-off service-local</b> → local<br/>
+              <b>۵. Rare — تنها این service ولی plausible</b> → local + §17 note برای future
+            </span>
+          </div>
+        </li>
+        <li class="human">
+          <div class="badge">C3</div>
+          <div class="body">
+            <span class="name">انسان — اگر library لمس شد</span>
+            <code>git tag v0.1.1 &amp;&amp; git push origin v0.1.1</code>
+            <span class="note">Bump-MR fan-out خودکار via <code>.gitlab-ci.yml</code> release-tag job.</span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="phase"><span class="tag">فاز D</span>Loop — هر تغییر بعدی</div>
+      <ul class="cmd-list">
+        <li>
+          <div class="badge">D1</div>
+          <div class="body">
+            <span class="name">هر تغییر در PRD-TDD service</span>
+            <code>/hp-implement backend-service &lt;repo&gt;</code>
+            <span class="note">دوباره PRD-TDD service را می‌خواند + دوباره library را می‌خواند + دوباره promotion decision tree. Idempotent.</span>
+          </div>
+        </li>
+        <li>
+          <div class="badge">D2a</div>
+          <div class="body">
+            <span class="name">ماژول جدید در PRD-TDD library</span>
+            <code>/hp-implement backend-library ::gap</code>
+            <span class="note">فقط ماژول‌های تازه اضافه‌شده نوشته می‌شوند. Existing دست نخورد.</span>
+          </div>
+        </li>
+        <li>
+          <div class="badge">D2b</div>
+          <div class="body">
+            <span class="name">هر تغییر روی ماژول موجود در PRD-TDD library</span>
+            <code>/hp-implement backend-library ::patch=&lt;module&gt;</code>
+            <span class="note">
+              کل یک ماژول موجود از نو با §8 فعلی sync می‌شود — بقیه ماژول‌ها و packaging دست نمی‌خورد.
+              trigger های ممکن: امضای عوض‌شده، symbol جدید داخل همان ماژول، method جدید روی class موجود، rename، تغییر return type، constant / <code>StrEnum</code> جدید، fix bug داخل بدنه، refactor internal.
+              <code>::gap</code> نمی‌تواند چون فایل موجود را skip می‌کند.
+            </span>
+          </div>
+        </li>
+      </ul>
+
+      <div class="loop">
+        <span>PRD-TDD تغییر کن</span><span class="arrow">→</span>
+        <span>دوباره generate</span><span class="arrow">→</span>
+        <span>library بروز</span>
+      </div>
+
+      <div class="phase"><span class="tag">چرا</span>drift/refactor phase جدا نیست</div>
+      <div style="padding: 16px 20px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; color: #cdd9e5; font-size: 0.9rem; line-height: 1.7;">
+        PRD-TDD کارِ authoritative است. <code>backend-service</code> هر بار PRD-TDD service + کل library را fresh می‌خواند. اگر standard الزام کند یا cross-service worthy باشد، همان‌جا در library هم می‌نویسد. Drift زمانی وجود دارد که reality از paper جلو بزند — اگر هر تغییر در paper سپس regenerate از paper، drift نمی‌سازد.
+      </div>
+
+    </section>
+
+  </div>
+</body>
+</html>
